@@ -8,6 +8,12 @@
 - 自动切换到指定的 Gemini 模型
 - 支持页面动态加载
 
+## 界面展示
+
+![Google AI Studio 界面截图](screenshot.jpg)
+
+插件会在页面右下角显示"已切换到 Gemini 2.0 Flash Thinking 模型"的提示信息。
+
 ## 安装方法
 
 1. 下载本项目所有文件

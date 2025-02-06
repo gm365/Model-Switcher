@@ -1,15 +1,18 @@
 {
     "manifest_version": 3,
     "name": "AI Studio Model Switcher",
-    "version": "1.4.1",
-    "description": "自动切换 AI Studio 的模型为指定模型",
+    "version": "1.5",
+    "description": "自动切换 AI Studio 模型",
     "permissions": [
-        "activeTab",
-        "scripting"
+        "storage",
+        "activeTab"
     ],
-    "host_permissions": [
-        "https://aistudio.google.com/*"
-    ],
+    "action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+            "128": "images/icon128.png"
+        }
+    },
     "content_scripts": [
         {
             "matches": [
@@ -17,12 +20,10 @@
             ],
             "js": [
                 "content.js"
-            ],
-            "run_at": "document_end"
+            ]
         }
     ],
     "icons": {
-        "48": "icon48.png",
-        "128": "icon128.png"
+        "128": "images/icon128.png"
     }
 }

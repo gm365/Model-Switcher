@@ -1,8 +1,9 @@
 // 添加初始化日志
 console.log('AI Studio Model Switcher 插件已加载');
 
-// 定义目标模型名称
-const TARGET_MODEL_NAME = 'Gemini 2.0 Flash Thinking Experimental 01-21';
+// 定义默认模型名称
+const DEFAULT_MODEL_NAME = 'Gemini 2.0 Flash Thinking Experimental 01-21';
+let TARGET_MODEL_NAME = DEFAULT_MODEL_NAME; // 初始化为默认值
 
 // 创建通知样式
 const style = document.createElement('style');
@@ -63,22 +64,35 @@ function showNotification(message) {
     }, 3000);
 }
 
-// 使用立即执行函数
-(function () {
-    console.log('开始执行插件逻辑');
+// 从 chrome.storage 中读取保存的模型名称
+chrome.storage.sync.get('selectedModel', (data) => {
+    if (data.selectedModel) {
+        TARGET_MODEL_NAME = data.selectedModel;
+        console.log('已加载用户选择的模型: ' + TARGET_MODEL_NAME);
+    } else {
+        console.log('使用默认模型: ' + TARGET_MODEL_NAME);
+    }
 
-    // 定义一个函数来尝试切换模型
-    function switchModel() {
-        console.log('尝试切换模型...');
-
+    // 使用 MutationObserver 监听 DOM 变化
+    const observer = new MutationObserver((mutations, observerInstance) => {
         // 1. 找到 mat-select 元素
         const matSelect = document.querySelector('#mat-select-0');
-        console.log('mat-select 元素:', matSelect);
-
-        if (!matSelect) {
-            console.log('等待 mat-select 元素加载...');
-            return false;
+        if (matSelect) {
+            console.log('mat-select 元素已出现:', matSelect);
+            switchModel(matSelect);
+            observerInstance.disconnect(); // 找到元素后停止监听
         }
+    });
+
+    // 开始监听 document.body 的变化
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+    // 定义一个函数来尝试切换模型
+    function switchModel(matSelect) {
+        console.log('尝试切换模型...');
 
         // 检查当前选中的模型
         const currentModelText = matSelect.textContent.trim();
@@ -88,7 +102,7 @@ function showNotification(message) {
         if (currentModelText.includes(TARGET_MODEL_NAME)) {
             console.log('当前已经是目标模型，无需切换');
             showNotification(`✓ 已经是 ${TARGET_MODEL_NAME} 模型`);
-            return true;
+            return;
         }
 
         // 2. 模拟点击打开下拉菜单
@@ -138,39 +152,5 @@ function showNotification(message) {
                 showNotification('❌ 未找到目标模型');
             }
         }, 1500);
-
-        return true;
     }
-
-    // 使用轮询方式检测元素
-    let pollCount = 0;
-    const maxPolls = 20; // 最多轮询20次
-    const pollInterval = 1000; // 每次轮询间隔1秒
-
-    function pollForElement() {
-        console.log(`轮询检测 (${pollCount + 1}/${maxPolls})`);
-
-        if (pollCount >= maxPolls) {
-            console.error('超过最大轮询次数，停止检测');
-            return;
-        }
-
-        pollCount++;
-
-        // 检测页面是否已经加载完成
-        if (document.readyState === 'complete') {
-            console.log('页面加载完成，尝试切换模型');
-            if (!switchModel()) {
-                // 如果没有找到元素，继续轮询
-                setTimeout(pollForElement, pollInterval);
-            }
-        } else {
-            console.log('页面尚未加载完成，等待中...');
-            setTimeout(pollForElement, pollInterval);
-        }
-    }
-
-    // 开始轮询
-    console.log('开始轮询检测页面元素');
-    pollForElement();
-})(); 
+}); 

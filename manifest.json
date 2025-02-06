@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
     "name": "AI Studio Model Switcher",
-    "version": "1.4",
-    "description": "自动切换 AI Studio 的模型为: Gemini 2.0 Flash Thinking Experimental 01-21",
+    "version": "1.4.1",
+    "description": "自动切换 AI Studio 的模型为指定模型",
     "permissions": [
         "activeTab",
         "scripting"

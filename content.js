@@ -1,6 +1,9 @@
 // 添加初始化日志
 console.log('AI Studio Model Switcher 插件已加载');
 
+// 定义目标模型名称
+const TARGET_MODEL_NAME = 'Gemini 2.0 Flash Thinking Experimental 01-21';
+
 // 创建通知样式
 const style = document.createElement('style');
 style.textContent = `
@@ -79,13 +82,12 @@ function showNotification(message) {
 
         // 检查当前选中的模型
         const currentModelText = matSelect.textContent.trim();
-        const targetOptionText = 'Gemini 2.0 Flash Thinking Experimental 01-21';
         console.log('当前模型:', currentModelText);
 
         // 如果当前已经是目标模型，则不需要切换
-        if (currentModelText.includes(targetOptionText)) {
+        if (currentModelText.includes(TARGET_MODEL_NAME)) {
             console.log('当前已经是目标模型，无需切换');
-            showNotification('✓ 已经是 Gemini 2.0 Flash Thinking 模型');
+            showNotification(`✓ 已经是 ${TARGET_MODEL_NAME} 模型`);
             return true;
         }
 
@@ -108,7 +110,7 @@ function showNotification(message) {
             for (let modelOption of modelOptions) {
                 const optionText = modelOption.textContent.trim();
                 console.log('检查选项:', optionText);
-                if (optionText.includes(targetOptionText)) {
+                if (optionText.includes(TARGET_MODEL_NAME)) {
                     targetOption = modelOption;
                     break;
                 }
@@ -118,11 +120,11 @@ function showNotification(message) {
                 // 4. 模拟点击目标选项
                 console.log('找到目标选项，执行点击');
                 targetOption.click();
-                console.log(`已成功切换到模型: ${targetOptionText}`);
+                console.log(`已成功切换到模型: ${TARGET_MODEL_NAME}`);
                 // 显示成功通知
-                showNotification('✓ 已切换到 Gemini 2.0 Flash Thinking 模型');
+                showNotification(`✓ 已切换到 ${TARGET_MODEL_NAME} 模型`);
             } else {
-                console.error(`找不到目标模型: "${targetOptionText}"`);
+                console.error(`找不到目标模型: "${TARGET_MODEL_NAME}"`);
                 // 打印当前可见的下拉菜单内容
                 const dropdown = document.querySelector('.mat-select-panel, .cdk-overlay-pane');
                 if (dropdown) {
